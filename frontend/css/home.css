@@ -1,0 +1,22 @@
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.home-hero {
+  background-color: #eafbe3;
+  padding: 3rem 1rem;
+  margin-bottom: 2rem;
+  border-radius: 5px;
+}
+
+.home-card img {
+  max-height: 180px;
+  object-fit: cover;
+}
+
+.home-card .card-body {
+  text-align: center;
+}

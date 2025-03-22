@@ -1,0 +1,25 @@
+.teams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.teams-header h2 {
+  margin: 0;
+}
+
+.teams-header .btn-add-team {
+  font-weight: 600;
+}
+
+.teams-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.teams-table th,
+.teams-table td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+}

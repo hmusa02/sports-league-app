@@ -1,0 +1,22 @@
+.matches-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.matches-table {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+
+.matches-table th,
+.matches-table td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+}
+
+.matches-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
