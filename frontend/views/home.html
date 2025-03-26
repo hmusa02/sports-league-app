@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sports League – Home</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/home.css" />
+  </head>
+  <body>
+    <h1 class="mb-4 text-center">Welcome to Sports League</h1>
+
+    <div class="hero-bg p-5 mb-4 rounded-3">
+      <div class="container-fluid py-5">
+        <h2>Join the action now</h2>
+        <p>Track teams, matches, and player stats in real time.</p>
+        <a class="btn btn-primary" href="#" onclick="loadPage('register')"
+          >Register</a
+        >
+        <a class="btn btn-outline-dark" href="#" onclick="loadPage('login')"
+          >Login</a
+        >
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row home-cards-row">
+        <div class="col-lg-4">
+          <div class="card mb-4 shadow-sm home-card">
+            <img
+              src="img/football1.jpg"
+              class="card-img-top custom-img-size"
+              alt="Soccer Team"
+            />
+            <div class="card-body">
+              <h5 class="card-title">Teams</h5>
+              <p class="card-text">View and manage league teams.</p>
+              <a href="#" class="btn btn-secondary" onclick="loadPage('teams')">
+                See Teams
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-4 shadow-sm home-card">
+            <img
+              src="img/football3.jpg"
+              class="card-img-top custom-img-size"
+              alt="Soccer Match"
+            />
+            <div class="card-body">
+              <h5 class="card-title">Matches</h5>
+              <p class="card-text">Check the latest fixtures and results.</p>
+              <a
+                href="#"
+                class="btn btn-secondary"
+                onclick="loadPage('matches')"
+              >
+                See Matches
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-4 shadow-sm home-card">
+            <img
+              src="img/football2.jpg"
+              class="card-img-top custom-img-size"
+              alt="Soccer News"
+            />
+            <div class="card-body">
+              <h5 class="card-title">News & Updates</h5>
+              <p class="card-text">Stay informed on league announcements.</p>
+              <a href="#" class="btn btn-secondary">Learn More</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4">
+        <h3>Ready to play?</h3>
+        <p>Register your team and compete in the ultimate sports league.</p>
+        <a class="btn btn-success" href="#" onclick="loadPage('register')">
+          Get Started
+        </a>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+.profile-avatar {
+  max-width: 150px;
+  border-radius: 50%;
+}
+
+.profile-card {
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-form .form-label {
+  font-weight: 500;
+}

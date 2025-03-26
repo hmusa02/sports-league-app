@@ -1,0 +1,21 @@
+/* style.css */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.custom-img-size {
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.hero-bg {
+  background-color: #dff3d8;
+  border-radius: 5px;
+}

@@ -1,0 +1,24 @@
+.login-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-image {
+  flex: 1 1 50%;
+  max-height: 400px;
+  object-fit: cover;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .login-image {
+    display: block;
+  }
+}
+
+.login-form {
+  flex: 1 1 50%;
+  padding: 1rem;
+}
