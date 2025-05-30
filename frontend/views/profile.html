@@ -1,39 +1,78 @@
-<h2 class="mb-4 text-center">My Profile</h2>
-<div class="row justify-content-center">
-  <div class="col-md-4 text-center">
-    <h5 id="profileUsername">John Doe</h5>
-    <p id="profileEmail">john.doe@example.com</p>
-  </div>
-  <div class="col-md-6">
-    <div class="card p-3">
-      <h4>Edit Profile</h4>
-      <form>
-        <div class="mb-3">
-          <label for="editName" class="form-label">Name:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="editName"
-            placeholder="John Doe"
-          />
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2 class="mb-4 text-center">My Profile</h2>
+
+      <!-- Profile Info Card -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5>Profile Information</h5>
         </div>
-        <div class="mb-3">
-          <label for="editEmail" class="form-label">Email:</label>
-          <input
-            type="email"
-            class="form-control"
-            id="editEmail"
-            placeholder="john.doe@example.com"
-          />
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <h4 id="profileUsername">Loading...</h4>
+            <p class="text-muted" id="profileEmail">Loading...</p>
+            <span class="badge bg-primary" id="profileRole">Loading...</span>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="editPassword" class="form-label">Password (New):</label>
-          <input type="password" class="form-control" id="editPassword" />
+      </div>
+
+      <!-- Edit Profile Card -->
+      <div class="card">
+        <div class="card-header">
+          <h5>Edit Profile</h5>
         </div>
-        <button type="button" class="btn btn-primary w-100">
-          Save Changes
-        </button>
-      </form>
+        <div class="card-body">
+          <form id="profileForm">
+            <div class="mb-3">
+              <label for="editUsername" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editUsername"
+                name="username"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editEmail" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="editEmail"
+                name="email"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editPassword" class="form-label"
+                >New Password (optional)</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="editPassword"
+                name="password"
+                placeholder="Leave blank to keep current password"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label"
+                >Confirm New Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPassword"
+                placeholder="Confirm new password if changing"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
