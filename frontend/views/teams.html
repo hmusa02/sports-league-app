@@ -1,3 +1,171 @@
 <div id="teamsPageContent">
   <!-- Teams content will be loaded here dynamically -->
 </div>
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Teams</h2>
+    <div id="adminControls" class="admin-controls" style="display: none">
+      <button
+        class="btn btn-success me-2"
+        data-bs-toggle="modal"
+        data-bs-target="#addTeamModal"
+      >
+        Add Team
+      </button>
+      <button class="btn btn-primary" onclick="loadTeams()">
+        Refresh Teams
+      </button>
+    </div>
+  </div>
+
+  <!-- Teams Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover teams-table">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>City</th>
+          <th>Stats</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Teams will be loaded here dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add Team Modal -->
+  <div class="modal fade" id="addTeamModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Team</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="addTeamForm">
+            <div class="mb-3">
+              <label for="teamName" class="form-label">Team Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="teamName"
+                name="team_name"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="teamCity" class="form-label">City</label>
+              <input
+                type="text"
+                class="form-control"
+                id="teamCity"
+                name="city"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="addTeam()">
+            Add Team
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Team Modal -->
+  <div class="modal fade" id="editTeamModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Team</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="editTeamForm">
+            <div class="mb-3">
+              <label for="editTeamName" class="form-label">Team Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editTeamName"
+                name="name"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editTeamCity" class="form-label">City</label>
+              <input
+                type="text"
+                class="form-control"
+                id="editTeamCity"
+                name="city"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editTeamFoundedYear" class="form-label"
+                >Founded Year</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="editTeamFoundedYear"
+                name="founded_year"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="updateTeam()">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Load initial teams
+  loadTeams();
+
+  // Show admin controls if user is admin
+  if (checkAdmin()) {
+    document.getElementById("adminControls").style.display = "block";
+  }
+
+  // Update admin controls visibility when the page content is loaded
+  document.addEventListener("DOMContentLoaded", function () {
+    if (checkAdmin()) {
+      document.getElementById("adminControls").style.display = "block";
+    }
+  });
+</script>

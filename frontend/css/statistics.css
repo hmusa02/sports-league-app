@@ -1,0 +1,26 @@
+.statistics-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.statistics-table th,
+.statistics-table td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+}
+
+.statistics-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.statistics-cards .card {
+  margin-bottom: 1rem;
+}
+
+.statistics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}

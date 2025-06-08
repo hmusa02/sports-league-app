@@ -17,12 +17,10 @@ class PlayerDao {
         try {
             $stmt = $this->conn->prepare($query);
 
-
             $stmt->bindParam(":first_name", $data['first_name']);
             $stmt->bindParam(":last_name", $data['last_name']);
             $stmt->bindParam(":position", $data['position']);
             $stmt->bindParam(":team_id", $data['team_id']);
-
 
             if($stmt->execute()) {
                 return $this->conn->lastInsertId();
@@ -56,7 +54,6 @@ class PlayerDao {
         return null;
     }
 
-
     public function getAll() {
         $query = "SELECT p.player_id, p.first_name, p.last_name, p.position, 
                          p.team_id, t.team_name
@@ -75,7 +72,6 @@ class PlayerDao {
         return [];
     }
 
-    
     public function getByTeamId($team_id) {
         $query = "SELECT player_id, first_name, last_name, position, team_id
                   FROM " . $this->table_name . "
@@ -94,7 +90,6 @@ class PlayerDao {
         return [];
     }
 
-
     public function update($data) {
         $query = "UPDATE " . $this->table_name . " 
                   SET first_name = :first_name, last_name = :last_name, 
@@ -104,13 +99,11 @@ class PlayerDao {
         try {
             $stmt = $this->conn->prepare($query);
 
-
             $stmt->bindParam(":first_name", $data['first_name']);
             $stmt->bindParam(":last_name", $data['last_name']);
             $stmt->bindParam(":position", $data['position']);
             $stmt->bindParam(":team_id", $data['team_id']);
             $stmt->bindParam(":player_id", $data['player_id']);
-
 
             return $stmt->execute();
         } catch(PDOException $e) {
@@ -120,7 +113,6 @@ class PlayerDao {
         return false;
     }
 
-    
     public function delete($id) {
         $query = "DELETE FROM " . $this->table_name . " WHERE player_id = :id";
 
@@ -135,7 +127,6 @@ class PlayerDao {
         return false;
     }
 
-    
     public function getPlayerStats($player_id) {
         $query = "SELECT s.stat_id, s.match_id, s.event_type, s.minute,
                          m.date_played, m.home_team_id, m.away_team_id,

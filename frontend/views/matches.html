@@ -1,3 +1,257 @@
-<div id="matchesPageContent">
-  <!-- Matches content will be loaded here dynamically -->
+<!-- Matches Page -->
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Matches</h2>
+    <div id="adminControls" class="admin-controls" style="display: none">
+      <button
+        class="btn btn-success me-2"
+        data-bs-toggle="modal"
+        data-bs-target="#addMatchModal"
+      >
+        Add Match
+      </button>
+      <button class="btn btn-primary" onclick="loadMatches()">
+        Refresh Matches
+      </button>
+    </div>
+  </div>
+
+  <!-- Matches Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover matches-table">
+      <thead class="table-dark">
+        <tr>
+          <th>Teams</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Score</th>
+          <th>Stats</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Matches will be loaded here dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add Match Modal -->
+  <div class="modal fade" id="addMatchModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Match</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="addMatchForm">
+            <div class="mb-3">
+              <label for="homeTeam" class="form-label">Home Team ID</label>
+              <input
+                type="number"
+                class="form-control"
+                id="homeTeam"
+                name="home_team_id"
+                required
+                min="1"
+              />
+              <small class="form-text text-muted"
+                >Upiši ID tima iz liste ispod.</small
+              >
+            </div>
+            <div class="mb-3">
+              <label for="awayTeam" class="form-label">Away Team ID</label>
+              <input
+                type="number"
+                class="form-control"
+                id="awayTeam"
+                name="away_team_id"
+                required
+                min="1"
+              />
+              <small class="form-text text-muted"
+                >Upiši ID tima iz liste ispod.</small
+              >
+            </div>
+            <div class="mb-3">
+              <label for="matchDate" class="form-label">Match Date</label>
+              <input
+                type="date"
+                class="form-control"
+                id="matchDate"
+                name="match_date"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="matchTime" class="form-label">Match Time</label>
+              <input
+                type="time"
+                class="form-control"
+                id="matchTime"
+                name="match_time"
+                required
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="addMatch()">
+            Add Match
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Match Modal -->
+  <div class="modal fade" id="editMatchModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Match</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="editMatchForm">
+            <div class="mb-3">
+              <label for="editHomeTeam" class="form-label">Home Team ID</label>
+              <input
+                type="number"
+                class="form-control"
+                id="editHomeTeam"
+                name="home_team_id"
+                required
+                min="1"
+              />
+              <small class="form-text text-muted"
+                >Upiši ID tima iz liste ispod.</small
+              >
+            </div>
+            <div class="mb-3">
+              <label for="editAwayTeam" class="form-label">Away Team ID</label>
+              <input
+                type="number"
+                class="form-control"
+                id="editAwayTeam"
+                name="away_team_id"
+                required
+                min="1"
+              />
+              <small class="form-text text-muted"
+                >Upiši ID tima iz liste ispod.</small
+              >
+            </div>
+            <div class="mb-3">
+              <label for="editMatchDate" class="form-label">Match Date</label>
+              <input
+                type="date"
+                class="form-control"
+                id="editMatchDate"
+                name="match_date"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editMatchTime" class="form-label">Match Time</label>
+              <input
+                type="time"
+                class="form-control"
+                id="editMatchTime"
+                name="match_time"
+                required
+              />
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="editScoreHome" class="form-label"
+                    >Home Score</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editScoreHome"
+                    name="score_home"
+                    min="0"
+                    placeholder="Optional"
+                  />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="editScoreAway" class="form-label"
+                    >Away Score</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="editScoreAway"
+                    name="score_away"
+                    min="0"
+                    placeholder="Optional"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" onclick="updateMatch()">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Match Stats Modal -->
+  <div
+    class="modal fade"
+    id="matchStatsModal"
+    tabindex="-1"
+    aria-labelledby="matchStatsModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="matchStatsModalLabel">
+            Match Statistics
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body" id="matchStatsContent">
+          <!-- Stats will be loaded here dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

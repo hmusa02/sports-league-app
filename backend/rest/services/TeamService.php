@@ -21,21 +21,23 @@ class TeamService {
             throw new Exception('Team name must be at least 2 characters long');
         }
 
-        // Validate coach_id if provided
-        if (isset($data['coach_id']) && !empty($data['coach_id'])) {
-            if (!is_numeric($data['coach_id'])) {
-                throw new Exception('Invalid coach ID');
-            }
-
-            $coach = $this->userDao->getById($data['coach_id']);
-            if (!$coach) {
-                throw new Exception('Coach not found');
+        // Validate founded_year if provided
+        if (isset($data['founded_year']) && !empty($data['founded_year'])) {
+            if (!is_numeric($data['founded_year']) || 
+                $data['founded_year'] < 1800 || 
+                $data['founded_year'] > date('Y')) {
+                throw new Exception('Invalid founded year');
             }
         }
 
         // Set city default if not provided
         if (!isset($data['city'])) {
             $data['city'] = null;
+        }
+
+        // Set coach_id default if not provided
+        if (!isset($data['coach_id'])) {
+            $data['coach_id'] = null;
         }
 
         return $this->teamDao->create($data);

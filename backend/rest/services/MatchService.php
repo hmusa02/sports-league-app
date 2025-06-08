@@ -39,9 +39,13 @@ class MatchService {
 
         // Validate date if provided
         if (isset($data['date_played']) && !empty($data['date_played'])) {
-            $date = DateTime::createFromFormat('Y-m-d', $data['date_played']);
+            // Accept both date (Y-m-d) and datetime (Y-m-d H:i:s) formats
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $data['date_played']);
             if (!$date) {
-                throw new Exception('Invalid date format. Use YYYY-MM-DD');
+                $date = DateTime::createFromFormat('Y-m-d', $data['date_played']);
+                if (!$date) {
+                    throw new Exception('Invalid date format. Use YYYY-MM-DD or YYYY-MM-DD HH:MM:SS');
+                }
             }
         }
 
@@ -133,9 +137,13 @@ class MatchService {
 
         // Validate date if provided
         if (isset($data['date_played']) && !empty($data['date_played'])) {
-            $date = DateTime::createFromFormat('Y-m-d', $data['date_played']);
+            // Accept both date (Y-m-d) and datetime (Y-m-d H:i:s) formats
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $data['date_played']);
             if (!$date) {
-                throw new Exception('Invalid date format. Use YYYY-MM-DD');
+                $date = DateTime::createFromFormat('Y-m-d', $data['date_played']);
+                if (!$date) {
+                    throw new Exception('Invalid date format. Use YYYY-MM-DD or YYYY-MM-DD HH:MM:SS');
+                }
             }
         }
 

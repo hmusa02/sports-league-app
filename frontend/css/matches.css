@@ -9,6 +9,7 @@
   width: 100%;
   border: 1px solid #ddd;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
 .matches-table th,
@@ -19,4 +20,39 @@
 
 .matches-table tbody tr:hover {
   background-color: #f8f9fa;
+}
+
+.team-list {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+
+.team-list h6 {
+  color: #6c757d;
+  margin-bottom: 8px;
+}
+
+.team-list ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.team-list li {
+  padding: 4px 8px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.team-list li:last-child {
+  border-bottom: none;
+}
+
+.modal-body {
+  max-height: 80vh;
+  overflow-y: auto;
 }
