@@ -1,15 +1,19 @@
 <?php
 require_once __DIR__ . '/../services/PlayerService.php';
+require_once __DIR__ . '/../../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../../utils/ValidationHelper.php';
 
 class PlayerRoutes {
     private $playerService;
+    private $authMiddleware;
 
     public function __construct() {
         $this->playerService = new PlayerService();
+        $this->authMiddleware = new AuthMiddleware();
     }
 
     public function registerRoutes($app) {
-        // GET /api/players - Get all players (public)
+        // Get all players
         $app->route('GET /api/players', function() {
             try {
                 $players = $this->playerService->getAllPlayers();
@@ -27,10 +31,79 @@ class PlayerRoutes {
             }
         });
 
-        // GET /api/players/@id - Get player by ID (public)
+        // Create new player (admin only)
+        $app->route('POST /api/players', function() {
+            try {
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRole('admin');
+                
+                $rawData = file_get_contents('php://input');
+                
+                if (empty($rawData)) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'No data provided'
+                    ], 400);
+                    return;
+                }
+                
+                $data = json_decode($rawData, true);
+                
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Invalid JSON data'
+                    ], 400);
+                    return;
+                }
+                
+                // Validate and sanitize data
+                $validation = ValidationHelper::validatePlayerData($data);
+                
+                if (!$validation['valid']) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Validation errors: ' . implode(', ', $validation['errors'])
+                    ], 400);
+                    return;
+                }
+                
+                $playerId = $this->playerService->createPlayer($validation['data']);
+                
+                Flight::json([
+                    'success' => true,
+                    'message' => 'Player created successfully',
+                    'data' => ['player_id' => $playerId]
+                ], 201);
+                
+            } catch (Exception $e) {
+                error_log('Player creation error: ' . $e->getMessage());
+                Flight::json([
+                    'success' => false,
+                    'message' => 'Failed to create player'
+                ], 400);
+            }
+        });
+
+        // Get player by ID
         $app->route('GET /api/players/@id', function($id) {
             try {
-                $player = $this->playerService->getPlayerById($id);
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRoles(['admin', 'user']);
+                
+                // Validate ID
+                $idValidation = ValidationHelper::validateInteger($id, 'Player ID', 1);
+                if (!$idValidation['valid']) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => $idValidation['message']
+                    ], 400);
+                    return;
+                }
+                
+                $player = $this->playerService->getPlayerById($idValidation['value']);
                 
                 Flight::json([
                     'success' => true,
@@ -45,72 +118,57 @@ class PlayerRoutes {
             }
         });
 
-        // POST /api/players - Create new player (admin only)
-        $app->route('POST /api/players', function() {
-            try {
-                // Check authentication
-                session_start();
-                if (!isset($_SESSION['user_id'])) {
-                    Flight::json([
-                        'success' => false,
-                        'message' => 'Authentication required'
-                    ], 401);
-                    return;
-                }
-
-                // Check admin role
-                if ($_SESSION['role'] !== 'admin') {
-                    Flight::json([
-                        'success' => false,
-                        'message' => 'Admin access required'
-                    ], 403);
-                    return;
-                }
-                
-                $data = json_decode(file_get_contents('php://input'), true);
-                
-                $playerId = $this->playerService->createPlayer($data);
-                
-                Flight::json([
-                    'success' => true,
-                    'message' => 'Player created successfully',
-                    'data' => ['player_id' => $playerId]
-                ], 201);
-                
-            } catch (Exception $e) {
-                Flight::json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 400);
-            }
-        });
-
-        // PUT /api/players/@id - Update player (admin only)
+        // Update player (admin only)
         $app->route('PUT /api/players/@id', function($id) {
             try {
-                // Check authentication
-                session_start();
-                if (!isset($_SESSION['user_id'])) {
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRole('admin');
+                
+                // Validate ID
+                $idValidation = ValidationHelper::validateInteger($id, 'Player ID', 1);
+                if (!$idValidation['valid']) {
                     Flight::json([
                         'success' => false,
-                        'message' => 'Authentication required'
-                    ], 401);
-                    return;
-                }
-
-                // Check admin role
-                if ($_SESSION['role'] !== 'admin') {
-                    Flight::json([
-                        'success' => false,
-                        'message' => 'Admin access required'
-                    ], 403);
+                        'message' => $idValidation['message']
+                    ], 400);
                     return;
                 }
                 
-                $data = json_decode(file_get_contents('php://input'), true);
-                $data['player_id'] = $id;
+                $rawData = file_get_contents('php://input');
                 
-                $result = $this->playerService->updatePlayer($data);
+                if (empty($rawData)) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'No data provided'
+                    ], 400);
+                    return;
+                }
+                
+                $data = json_decode($rawData, true);
+                
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Invalid JSON data'
+                    ], 400);
+                    return;
+                }
+                
+                // Validate and sanitize data
+                $validation = ValidationHelper::validatePlayerData($data);
+                
+                if (!$validation['valid']) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => 'Validation errors: ' . implode(', ', $validation['errors'])
+                    ], 400);
+                    return;
+                }
+                
+                $validation['data']['player_id'] = $idValidation['value'];
+                
+                $result = $this->playerService->updatePlayer($validation['data']);
                 
                 Flight::json([
                     'success' => true,
@@ -118,36 +176,32 @@ class PlayerRoutes {
                 ]);
                 
             } catch (Exception $e) {
+                error_log('Player update error: ' . $e->getMessage());
                 Flight::json([
                     'success' => false,
-                    'message' => $e->getMessage()
+                    'message' => 'Failed to update player'
                 ], 400);
             }
         });
 
-        // DELETE /api/players/@id - Delete player (admin only)
+        // Delete player (admin only)
         $app->route('DELETE /api/players/@id', function($id) {
             try {
-                // Check authentication
-                session_start();
-                if (!isset($_SESSION['user_id'])) {
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRole('admin');
+                
+                // Validate ID
+                $idValidation = ValidationHelper::validateInteger($id, 'Player ID', 1);
+                if (!$idValidation['valid']) {
                     Flight::json([
                         'success' => false,
-                        'message' => 'Authentication required'
-                    ], 401);
-                    return;
-                }
-
-                // Check admin role
-                if ($_SESSION['role'] !== 'admin') {
-                    Flight::json([
-                        'success' => false,
-                        'message' => 'Admin access required'
-                    ], 403);
+                        'message' => $idValidation['message']
+                    ], 400);
                     return;
                 }
                 
-                $result = $this->playerService->deletePlayer($id);
+                $result = $this->playerService->deletePlayer($idValidation['value']);
                 
                 Flight::json([
                     'success' => true,
@@ -155,53 +209,32 @@ class PlayerRoutes {
                 ]);
                 
             } catch (Exception $e) {
+                error_log('Player deletion error: ' . $e->getMessage());
                 Flight::json([
                     'success' => false,
-                    'message' => $e->getMessage()
+                    'message' => 'Failed to delete player'
                 ], 400);
             }
         });
 
-        // GET /api/players/team/@teamId - Get players by team (public)
-        $app->route('GET /api/players/team/@teamId', function($teamId) {
-            try {
-                $players = $this->playerService->getPlayersByTeam($teamId);
-                
-                Flight::json([
-                    'success' => true,
-                    'data' => $players
-                ]);
-                
-            } catch (Exception $e) {
-                Flight::json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 404);
-            }
-        });
-
-        // GET /api/players/position/@position - Get players by position (public)
-        $app->route('GET /api/players/position/@position', function($position) {
-            try {
-                $players = $this->playerService->getPlayersByPosition($position);
-                
-                Flight::json([
-                    'success' => true,
-                    'data' => $players
-                ]);
-                
-            } catch (Exception $e) {
-                Flight::json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 400);
-            }
-        });
-
-        // GET /api/players/@id/stats - Get player statistics (public)
+        // Get player statistics
         $app->route('GET /api/players/@id/stats', function($id) {
             try {
-                $stats = $this->playerService->getPlayerStats($id);
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRoles(['admin', 'user']);
+                
+                // Validate ID
+                $idValidation = ValidationHelper::validateInteger($id, 'Player ID', 1);
+                if (!$idValidation['valid']) {
+                    Flight::json([
+                        'success' => false,
+                        'message' => $idValidation['message']
+                    ], 400);
+                    return;
+                }
+                
+                $stats = $this->playerService->getPlayerStats($idValidation['value']);
                 
                 Flight::json([
                     'success' => true,

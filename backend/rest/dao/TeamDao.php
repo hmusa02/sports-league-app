@@ -12,17 +12,14 @@ class TeamDao {
    
     public function create($data) {
         $query = "INSERT INTO " . $this->table_name . " 
-                  (team_name, city, coach_id) 
-                  VALUES (:team_name, :city, :coach_id)";
+                  (team_name, city) 
+                  VALUES (:team_name, :city)";
 
         try {
             $stmt = $this->conn->prepare($query);
 
-
             $stmt->bindParam(":team_name", $data['team_name']);
             $stmt->bindParam(":city", $data['city']);
-            $stmt->bindParam(":coach_id", $data['coach_id']);
-
 
             if($stmt->execute()) {
                 return $this->conn->lastInsertId();
@@ -79,18 +76,18 @@ class TeamDao {
    
     public function update($data) {
         $query = "UPDATE " . $this->table_name . " 
-                  SET team_name = :team_name, city = :city, coach_id = :coach_id
+                  SET team_name = :team_name, city = :city, 
+                      founded_year = :founded_year, coach_id = :coach_id
                   WHERE team_id = :team_id";
 
         try {
             $stmt = $this->conn->prepare($query);
 
-
             $stmt->bindParam(":team_name", $data['team_name']);
             $stmt->bindParam(":city", $data['city']);
+            $stmt->bindParam(":founded_year", $data['founded_year']);
             $stmt->bindParam(":coach_id", $data['coach_id']);
             $stmt->bindParam(":team_id", $data['team_id']);
-
 
             return $stmt->execute();
         } catch(PDOException $e) {

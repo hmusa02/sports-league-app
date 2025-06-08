@@ -9,16 +9,20 @@ function loadPage(page) {
     return;
   }
 
-  console.log("Fetching page:", `views/${page}.html`);
+  // Add cache-busting timestamp
+  const timestamp = new Date().getTime();
+  const url = `views/${page}.html?t=${timestamp}`;
 
-  fetch(`views/${page}.html`)
+  console.log("Fetching page:", url);
+
+  fetch(url)
     .then((response) => {
       console.log("Fetch response:", response);
       return response.text();
     })
     .then((html) => {
       console.log("HTML loaded for page:", page);
-      document.getElementById("content").innerHTML = html;
+      document.getElementById("mainContent").innerHTML = html;
       console.log(page + " page loaded");
 
       if (page === "register") {
@@ -31,8 +35,21 @@ function loadPage(page) {
         loadTeams();
       } else if (page === "matches") {
         loadMatches();
+        if (typeof setupMatchModalListeners === "function") {
+          setupMatchModalListeners();
+        }
       } else if (page === "profile") {
         loadUserProfile();
+      } else if (page === "players") {
+        loadPlayers();
+      } else if (page === "statistics") {
+        loadMatchStatistics();
+      }
+
+      // Show/hide admin controls
+      const adminControls = document.getElementById("adminControls");
+      if (adminControls) {
+        adminControls.style.display = checkAdmin() ? "block" : "none";
       }
     })
     .catch((err) => {
@@ -125,97 +142,6 @@ function setupLoginForm() {
   }, 100);
 }
 
-function loadTeams() {
-  const token = localStorage.getItem("user_token");
-  if (!token) {
-    alert("Please login first");
-    loadPage("login");
-    return;
-  }
-
-  fetch("http://localhost:8888/sports-league-app/backend/api/teams", {
-    method: "GET",
-    headers: {
-      Authentication: token,
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      if (result.success) {
-        displayTeams(result.data);
-      } else {
-        alert("Error loading teams: " + result.message);
-      }
-    })
-    .catch((error) => {
-      console.error("Error loading teams:", error);
-      alert("Error loading teams");
-    });
-}
-
-function displayTeams(teams) {
-  const teamsTable = document.querySelector(".teams-table tbody");
-  if (teamsTable) {
-    teamsTable.innerHTML = "";
-    teams.forEach((team) => {
-      const row = `
-                <tr>
-                    <td>${team.team_name}</td>
-                    <td>${team.city || "N/A"}</td>
-                    <td>${team.coach_name || "No Coach"}</td>
-                </tr>
-            `;
-      teamsTable.innerHTML += row;
-    });
-  }
-}
-
-function loadMatches() {
-  const token = localStorage.getItem("user_token");
-  if (!token) {
-    alert("Please login first");
-    loadPage("login");
-    return;
-  }
-
-  fetch("http://localhost:8888/sports-league-app/backend/api/matches", {
-    method: "GET",
-    headers: {
-      Authentication: token,
-    },
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      if (result.success) {
-        displayMatches(result.data);
-      } else {
-        alert("Error loading matches: " + result.message);
-      }
-    })
-    .catch((error) => {
-      console.error("Error loading matches:", error);
-      alert("Error loading matches");
-    });
-}
-
-function displayMatches(matches) {
-  const matchesTable = document.querySelector(".matches-table tbody");
-  if (matchesTable) {
-    matchesTable.innerHTML = "";
-    matches.forEach((match) => {
-      const row = `
-                <tr>
-                    <td>${match.date_played}</td>
-                    <td>${match.home_team_name}</td>
-                    <td>${match.away_team_name}</td>
-                    <td>${match.score_home || 0} - ${match.score_away || 0}</td>
-                </tr>
-            `;
-      matchesTable.innerHTML += row;
-    });
-  }
-}
-
 function loadUserProfile() {
   const user = Utils.getCurrentUser();
   if (user) {
@@ -274,12 +200,28 @@ function logout() {
   loadPage("login");
 }
 
-window.onload = () => {
-  if (Utils.isLoggedIn()) {
-    updateNavigation();
+// Initialize App
+document.addEventListener("DOMContentLoaded", () => {
+  // Update navigation based on auth status
+  updateNavigation();
+
+  // Load initial page
+  const token = localStorage.getItem("user_token");
+  if (token) {
+    // If user is logged in, load home page
     loadPage("home");
   } else {
-    loadPage("login");
+    // If user is not logged in, also load home page
+    // They will be redirected to login if they try to access protected resources
+    loadPage("home");
   }
-  console.log("App initialized");
-};
+
+  // Setup page load event listeners
+  document.querySelectorAll("[data-page]").forEach((element) => {
+    element.addEventListener("click", (e) => {
+      e.preventDefault();
+      const page = e.target.getAttribute("data-page");
+      loadPage(page);
+    });
+  });
+});

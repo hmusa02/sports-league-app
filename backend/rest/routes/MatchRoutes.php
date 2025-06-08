@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../services/MatchService.php';
-require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../../middleware/AuthMiddleware.php';
 
 class MatchRoutes {
     private $matchService;
@@ -12,7 +12,7 @@ class MatchRoutes {
     }
 
     public function registerRoutes($app) {
-        // GET /api/matches - Get all matches (public)
+        // Get all matches
         $app->route('GET /api/matches', function() {
             try {
                 $matches = $this->matchService->getAllMatches();
@@ -30,52 +30,14 @@ class MatchRoutes {
             }
         });
 
-        // GET /api/matches/@id - Get match by ID (public)
-        $app->route('GET /api/matches/@id', function($id) {
-            try {
-                $match = $this->matchService->getMatchById($id);
-                
-                Flight::json([
-                    'success' => true,
-                    'data' => $match
-                ]);
-                
-            } catch (Exception $e) {
-                Flight::json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 404);
-            }
-        });
-
-        // GET /api/matches/upcoming - Get upcoming matches (public)
-        $app->route('GET /api/matches/upcoming', function() {
-            try {
-                $matches = $this->matchService->getUpcomingMatches();
-                
-                Flight::json([
-                    'success' => true,
-                    'data' => $matches
-                ]);
-                
-            } catch (Exception $e) {
-                Flight::json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 500);
-            }
-        });
-
-        // POST /api/matches - Create new match (admin only)
+        // Create new match (admin only)
         $app->route('POST /api/matches', function() {
             try {
-                // JWT Authentication
                 $token = $this->authMiddleware->checkAuthHeader();
                 $this->authMiddleware->verifyToken($token);
                 $this->authMiddleware->authorizeRole('admin');
                 
                 $data = json_decode(file_get_contents('php://input'), true);
-                
                 $matchId = $this->matchService->createMatch($data);
                 
                 Flight::json([
@@ -92,10 +54,31 @@ class MatchRoutes {
             }
         });
 
-        // PUT /api/matches/@id - Update match (admin only)
+        // Get match by ID
+        $app->route('GET /api/matches/@id', function($id) {
+            try {
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRoles(['admin', 'user']);
+                
+                $match = $this->matchService->getMatchById($id);
+                
+                Flight::json([
+                    'success' => true,
+                    'data' => $match
+                ]);
+                
+            } catch (Exception $e) {
+                Flight::json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 404);
+            }
+        });
+
+        // Update match (admin only)
         $app->route('PUT /api/matches/@id', function($id) {
             try {
-                // JWT Authentication
                 $token = $this->authMiddleware->checkAuthHeader();
                 $this->authMiddleware->verifyToken($token);
                 $this->authMiddleware->authorizeRole('admin');
@@ -118,10 +101,9 @@ class MatchRoutes {
             }
         });
 
-        // DELETE /api/matches/@id - Delete match (admin only)
+        // Delete match (admin only)
         $app->route('DELETE /api/matches/@id', function($id) {
             try {
-                // JWT Authentication
                 $token = $this->authMiddleware->checkAuthHeader();
                 $this->authMiddleware->verifyToken($token);
                 $this->authMiddleware->authorizeRole('admin');
@@ -141,10 +123,31 @@ class MatchRoutes {
             }
         });
 
-        // PUT /api/matches/@id/score - Update match score (admin only)
+        // Get match statistics
+        $app->route('GET /api/matches/@id/stats', function($id) {
+            try {
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRoles(['admin', 'user']);
+                
+                $stats = $this->matchService->getMatchStats($id);
+                
+                Flight::json([
+                    'success' => true,
+                    'data' => $stats
+                ]);
+                
+            } catch (Exception $e) {
+                Flight::json([
+                    'success' => false,
+                    'message' => $e->getMessage()
+                ], 404);
+            }
+        });
+
+        // Update match score (admin only)
         $app->route('PUT /api/matches/@id/score', function($id) {
             try {
-                // JWT Authentication
                 $token = $this->authMiddleware->checkAuthHeader();
                 $this->authMiddleware->verifyToken($token);
                 $this->authMiddleware->authorizeRole('admin');
@@ -166,9 +169,13 @@ class MatchRoutes {
             }
         });
 
-        // GET /api/matches/team/@teamId - Get matches by team (public)
+        // Get matches by team
         $app->route('GET /api/matches/team/@teamId', function($teamId) {
             try {
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRoles(['admin', 'user']);
+                
                 $matches = $this->matchService->getMatchesByTeam($teamId);
                 
                 Flight::json([
@@ -184,21 +191,25 @@ class MatchRoutes {
             }
         });
 
-        // GET /api/matches/@id/stats - Get match statistics (public)
-        $app->route('GET /api/matches/@id/stats', function($id) {
+        // Get upcoming matches
+        $app->route('GET /api/matches/upcoming', function() {
             try {
-                $stats = $this->matchService->getMatchStats($id);
+                $token = $this->authMiddleware->checkAuthHeader();
+                $this->authMiddleware->verifyToken($token);
+                $this->authMiddleware->authorizeRoles(['admin', 'user']);
+                
+                $matches = $this->matchService->getUpcomingMatches();
                 
                 Flight::json([
                     'success' => true,
-                    'data' => $stats
+                    'data' => $matches
                 ]);
                 
             } catch (Exception $e) {
                 Flight::json([
                     'success' => false,
                     'message' => $e->getMessage()
-                ], 404);
+                ], 500);
             }
         });
     }

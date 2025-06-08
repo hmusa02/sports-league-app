@@ -1,0 +1,47 @@
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# PHP
+vendor/
+composer.phar
+*.log
+
+# Environment Files
+.env
+.env.local
+.env.production
+.env.backup
+
+# Cache and temporary files
+/backend/cache/
+/backend/logs/
+/backend/tmp/
+*.tmp
+*.temp
+
+# MAMP specific
+.htaccess
+
+# Railway specific
+.railway/
+
+# Node modules (if any)
+node_modules/
+
+# Security logs
+/backend/logs/security.log
+
+# Rate limiting cache files
+/tmp/rate_limit_* 

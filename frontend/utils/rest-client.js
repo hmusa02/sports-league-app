@@ -6,7 +6,7 @@ let RestClient = {
       beforeSend: function (xhr) {
         const token = localStorage.getItem("user_token");
         if (token) {
-          xhr.setRequestHeader("Authentication", token);
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
         }
       },
       success: function (response) {
@@ -26,7 +26,7 @@ let RestClient = {
       beforeSend: function (xhr) {
         const token = localStorage.getItem("user_token");
         if (token) {
-          xhr.setRequestHeader("Authentication", token);
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
         }
       },
       data: data ? JSON.stringify(data) : null,

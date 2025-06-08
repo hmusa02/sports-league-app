@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Players</h2>
+    <div class="d-flex gap-2">
+      <button
+        class="btn btn-success"
+        data-bs-toggle="modal"
+        data-bs-target="#addPlayerModal"
+      >
+        Add Player
+      </button>
+      <div id="adminControls" style="display: none">
+        <button class="btn btn-primary" onclick="loadPlayers()">
+          Refresh Players
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Players Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover players-table">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Team</th>
+          <th>Position</th>
+          <th>Stats</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Players will be loaded here dynamically -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // Show admin controls if user is admin
+  if (checkAdmin()) {
+    document.getElementById("adminControls").style.display = "block";
+  }
+
+  // Load initial players
+  loadPlayers();
+</script>

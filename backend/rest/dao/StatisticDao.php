@@ -66,9 +66,9 @@ class StatisticDao {
    
     public function getAll() {
         $query = "SELECT s.stat_id, s.match_id, s.player_id, s.event_type, s.minute,
-                         p.first_name, p.last_name,
-                         m.date_played, m.home_team_id, m.away_team_id,
-                         ht.team_name as home_team_name, at.team_name as away_team_name
+                         CONCAT(p.first_name, ' ', p.last_name) as player_name,
+                         CONCAT(ht.team_name, ' vs ', at.team_name) as match_name,
+                         m.date_played
                   FROM " . $this->table_name . " s
                   JOIN players p ON s.player_id = p.player_id
                   JOIN matches m ON s.match_id = m.match_id
